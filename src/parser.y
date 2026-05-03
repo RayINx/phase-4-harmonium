@@ -152,7 +152,7 @@ static int validate_func_call(symEntry *fn, tree *args){
 
 %token <strval> ID
 %token <value> INTCONST CHARCONST
-%token KWD_INT KWD_CHAR KWD_VOID KWD_WHILE KWD_RETURN KWD_IF KWD_ELSE
+%token KWD_INT KWD_CHAR KWD_VOID KWD_WHILE KWD_RETURN KWD_IF KWD_ELSE KWD_FOR
 %token LSQ_BRKT RSQ_BRKT LCRLY_BRKT RCRLY_BRKT LPAREN RPAREN
 %token COMMA SEMICLN OPER_LTE OPER_LT OPER_DIV
 %token OPER_GT OPER_GTE OPER_EQ OPER_ASGN OPER_NEQ OPER_ADD OPER_SUB OPER_MUL
@@ -163,7 +163,7 @@ static int validate_func_call(symEntry *fn, tree *args){
 %type <node> formalDeclList formalDecl funBody arrayDecl localDeclList
 %type <node> statementList statement compoundStmt assignStmt var
 %type <node> expression condStmt loopStmt returnStmt addExpr relop addop term
-%type <node> funCallExpr argList mulop factor
+%type <node> funCallExpr argList mulop factor forAssign
 
 
 /* https://stackoverflow.com/questions/6894826/ */
@@ -439,6 +439,18 @@ assignStmt      : var OPER_ASGN expression SEMICLN
                     if($1->type == TYPE_ERROR || $3->type == TYPE_ERROR || $1->type != $3->type){ yyerror("Type mismatch in assignment."); }
                   }
                 ;
+
+forAssign       : var OPER_ASGN expression
+                  {
+                    $$ = maketree(ASSIGNSTMT);
+                    addChild($$, $1);
+                    addChild($$, $3);
+
+                    if($1->type == TYPE_ERROR || $3->type == TYPE_ERROR || $1->type != $3->type){
+                      yyerror("Type Mismatch in assignment.");
+                    }
+                  }
+                ;
                 
 condStmt        : KWD_IF LPAREN expression RPAREN statement %prec LOWER_THAN_ELSE
                   {
@@ -460,6 +472,14 @@ loopStmt        : KWD_WHILE LPAREN expression RPAREN statement
                     $$ = maketree(LOOPSTMT);
                     addChild($$, $3);
                     addChild($$, $5);
+                  }
+                  | KWD_FOR LPAREN forAssign SEMICLN expression SEMICLN forAssign RPAREN statement
+                  {
+                    $$ = maketree(LOOPSTMT)
+                    addChild($$, $3);
+                    addChild($$, $5);
+                    addChild($$, $7);
+                    addChild($$, $9);
                   }
                 ;
 
