@@ -49,6 +49,7 @@ void genVarDecl(tree *node);
 void genAssign(tree *node);
 void genIf(tree *node);
 void genWhile(tree *node);
+void genFor(tree *node);
 void genReturn(tree *node);
 const char *genExpr(tree *node);
 
@@ -107,7 +108,11 @@ void genNode(tree *node) {
             break;
 
         case LOOPSTMT:
-            genWhile(node);
+            if (node->numChildren == 2) {
+                genWhile(node);
+            } else {
+                genFor(node);
+            }
             break;
 
         case RETURNSTMT:
@@ -415,6 +420,33 @@ void genWhile(tree *node) {
 
     fprintf(out, "    j .Lwhile%d\n", id);
     fprintf(out, ".Lendwhile%d:\n", id);
+}
+
+void genFor(tree *node) {
+    int id = newLabel();
+
+    tree *init = getChild(node, 0);
+    tree *cond = getChild(node, 1);
+    tree *update = getChild(node, 2);
+    tree *body = getChild(node, 3);
+
+    // init
+    genNode(init);
+
+    fprintf(out, ".Lfor%d:\n", id);
+
+    const char *condReg = genExpr(cond);
+    fprintf(out, "    beqz %s, .Lendfor%d\n", condReg, id);
+    freeReg(condReg);
+
+    // body
+    genNode(body);
+
+    // update
+    genNode(update);
+
+    fprintf(out, "    j .Lfor%d\n", id);
+    fprintf(out, ".Lendfor%d:\n", id);
 }
 
 void genReturn(tree *node) {

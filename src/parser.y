@@ -475,7 +475,7 @@ loopStmt        : KWD_WHILE LPAREN expression RPAREN statement
                   }
                   | KWD_FOR LPAREN forAssign SEMICLN expression SEMICLN forAssign RPAREN statement
                   {
-                    $$ = maketree(LOOPSTMT)
+                    $$ = maketree(LOOPSTMT);
                     addChild($$, $3);
                     addChild($$, $5);
                     addChild($$, $7);

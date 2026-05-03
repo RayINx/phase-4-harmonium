@@ -49,28 +49,29 @@
      KWD_RETURN = 265,
      KWD_IF = 266,
      KWD_ELSE = 267,
-     LSQ_BRKT = 268,
-     RSQ_BRKT = 269,
-     LCRLY_BRKT = 270,
-     RCRLY_BRKT = 271,
-     LPAREN = 272,
-     RPAREN = 273,
-     COMMA = 274,
-     SEMICLN = 275,
-     OPER_LTE = 276,
-     OPER_LT = 277,
-     OPER_DIV = 278,
-     OPER_GT = 279,
-     OPER_GTE = 280,
-     OPER_EQ = 281,
-     OPER_ASGN = 282,
-     OPER_NEQ = 283,
-     OPER_ADD = 284,
-     OPER_SUB = 285,
-     OPER_MUL = 286,
-     ERROR = 287,
-     ILLEGAL_TOK = 288,
-     LOWER_THAN_ELSE = 289
+     KWD_FOR = 268,
+     LSQ_BRKT = 269,
+     RSQ_BRKT = 270,
+     LCRLY_BRKT = 271,
+     RCRLY_BRKT = 272,
+     LPAREN = 273,
+     RPAREN = 274,
+     COMMA = 275,
+     SEMICLN = 276,
+     OPER_LTE = 277,
+     OPER_LT = 278,
+     OPER_DIV = 279,
+     OPER_GT = 280,
+     OPER_GTE = 281,
+     OPER_EQ = 282,
+     OPER_ASGN = 283,
+     OPER_NEQ = 284,
+     OPER_ADD = 285,
+     OPER_SUB = 286,
+     OPER_MUL = 287,
+     ERROR = 288,
+     ILLEGAL_TOK = 289,
+     LOWER_THAN_ELSE = 290
    };
 #endif
 /* Tokens.  */
@@ -84,28 +85,29 @@
 #define KWD_RETURN 265
 #define KWD_IF 266
 #define KWD_ELSE 267
-#define LSQ_BRKT 268
-#define RSQ_BRKT 269
-#define LCRLY_BRKT 270
-#define RCRLY_BRKT 271
-#define LPAREN 272
-#define RPAREN 273
-#define COMMA 274
-#define SEMICLN 275
-#define OPER_LTE 276
-#define OPER_LT 277
-#define OPER_DIV 278
-#define OPER_GT 279
-#define OPER_GTE 280
-#define OPER_EQ 281
-#define OPER_ASGN 282
-#define OPER_NEQ 283
-#define OPER_ADD 284
-#define OPER_SUB 285
-#define OPER_MUL 286
-#define ERROR 287
-#define ILLEGAL_TOK 288
-#define LOWER_THAN_ELSE 289
+#define KWD_FOR 268
+#define LSQ_BRKT 269
+#define RSQ_BRKT 270
+#define LCRLY_BRKT 271
+#define RCRLY_BRKT 272
+#define LPAREN 273
+#define RPAREN 274
+#define COMMA 275
+#define SEMICLN 276
+#define OPER_LTE 277
+#define OPER_LT 278
+#define OPER_DIV 279
+#define OPER_GT 280
+#define OPER_GTE 281
+#define OPER_EQ 282
+#define OPER_ASGN 283
+#define OPER_NEQ 284
+#define OPER_ADD 285
+#define OPER_SUB 286
+#define OPER_MUL 287
+#define ERROR 288
+#define ILLEGAL_TOK 289
+#define LOWER_THAN_ELSE 290
 
 
 
@@ -119,7 +121,7 @@ typedef union YYSTYPE
     char *strval;
 }
 /* Line 1529 of yacc.c.  */
-#line 123 "obj/y.tab.h"
+#line 125 "obj/y.tab.h"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
