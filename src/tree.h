@@ -32,7 +32,6 @@ void printAst(tree *root, int nestLevel);
 /* Adds all children of sublist to list */
 void flattenList(tree *list, tree *subList);
 
-
 /* tree manipulation macros */
 /* if you are writing your compiler in C, you would want to have a large collection of these */
 

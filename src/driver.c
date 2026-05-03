@@ -5,7 +5,7 @@
 #include<strtab.h>
 
 extern FILE* yyin;
-
+int yyparse(void);
 void codegen(tree *root);
 
 void printhelp(){
@@ -50,6 +50,8 @@ int main(int argc, char *argv[]) {
             printAst(ast, 1);
         if(p_symtab)
             print_sym_tab();
+        
+        codegen(ast);
     }
     return 0;
 }

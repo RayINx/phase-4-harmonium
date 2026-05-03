@@ -38,7 +38,7 @@ extern table_node *current_scope;
 
 extern char currFunction[256];
 
-
+int get_symbol_index(symEntry *entry);
 
 /* Inserts a symbol into the current symbol table tree. Please note that this function is
  * used to instead into the tree of symbol tables and NOT the AST. Start at the returned 

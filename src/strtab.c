@@ -24,6 +24,23 @@ table_node *makeTableNode(table_node *parent){
     return n;
 }
 
+int get_symbol_index(symEntry *entry) {
+    if (!entry) return -1;
+
+    table_node *scope = current_scope;
+
+    while (scope != NULL) {
+        for (int i = 0; i < MAXIDS; i++) {
+            if (scope->strTable[i] == entry) {
+                return i;
+            }
+        }
+        scope = scope->parent;
+    }
+
+    return -1;
+}
+
 // Hash method taken from phase 2 and modified.
 int hash(unsigned char *str) {
   unsigned long hash = 5381;
