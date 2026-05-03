@@ -16,7 +16,6 @@ int yyerror(char *msg);
 
 int callArgDepth = 0;
 
-typedef struct treenode tree;
 extern tree *ast;
 
 /* nodeTypes refer to different types of internal and external nodes
@@ -98,7 +97,9 @@ static symEntry* lookup_func(char *id){
   return entry;
 }
 
-static int id_for_ast(symEntry *entry){ return entry ? 0 : -1; }
+static int id_for_ast(symEntry *entry){
+    return get_symbol_index(entry);
+}
 
 static int combine_arithmetic_type(int lhs, int rhs){
   if(lhs == TYPE_ERROR || rhs == TYPE_ERROR){ return TYPE_ERROR; }
