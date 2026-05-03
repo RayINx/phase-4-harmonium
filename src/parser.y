@@ -1,4 +1,3 @@
-// Copied in from Phase 2
 /* ------------------------------- Part 1 ----------------------------------- */
 %{
 #include<stdio.h>
@@ -16,7 +15,6 @@ int yywarning(char *msg);
 int yyerror(char *msg);
 
 int callArgDepth = 0;
-
 
 typedef struct treenode tree;
 extern tree *ast;

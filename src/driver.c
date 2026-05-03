@@ -6,6 +6,8 @@
 
 extern FILE* yyin;
 
+void codegen(tree *root);
+
 void printhelp(){
     printf("Usage: mcc [--ast] [--sym] [-h|--help] FILE\n");
     printf("\t--ast:\t\tPrint a textual representation of the constructed abstract syntax tree.\n");
