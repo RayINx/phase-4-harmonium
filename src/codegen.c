@@ -44,14 +44,13 @@ static int labelCounter = 0;
 
 void genNode(tree *node);
 void genStatement(tree *node);
-const char *genExpr(tree *node);
-
 void genFunction(tree *node);
 void genVarDecl(tree *node);
 void genAssign(tree *node);
 void genIf(tree *node);
 void genWhile(tree *node);
 void genReturn(tree *node);
+const char *genExpr(tree *node);
 
 void codegen(tree *root) {
     out = fopen("out.s", "w");
@@ -84,6 +83,7 @@ void genNode(tree *node) {
         case STATEMENT:
         case COMPOUNDSTMT:
         case LOCALDECLLIST:
+
         case FUNBODY:
             for (int i = 0; i < node->numChildren; i++) {
                 genNode(getChild(node, i));
@@ -146,6 +146,8 @@ static void freeReg(const char *reg) {
 typedef struct {
     int symbolIndex;
     int offset;
+    int size;      // number of elements
+    int isArray;   // 1 = array, 0 = scalar
 } VarOffset;
 
 static VarOffset varOffsets[256];
@@ -158,11 +160,18 @@ static void resetFunctionLocals(void) {
     memset(regUsed, 0, sizeof(regUsed));
 }
 
-static int addVarOffset(int symbolIndex) {
+static int addVarOffset(int symbolIndex, int size, int isArray) {
     varOffsets[varCount].symbolIndex = symbolIndex;
     varOffsets[varCount].offset = nextOffset;
+    varOffsets[varCount].size = size;
+    varOffsets[varCount].isArray = isArray;
 
-    nextOffset -= 4;
+    if (isArray) {
+        nextOffset -= size * 4;   // reserve full array space
+    } else {
+        nextOffset -= 4;          // reserve single int
+    }
+
     varCount++;
 
     return varOffsets[varCount - 1].offset;
@@ -206,20 +215,52 @@ void genFunction(tree *node) {
 
 void genVarDecl(tree *node) {
     tree *idNode = getChild(node, 1);
-    addVarOffset(idNode->val);
+
+    if (node->numChildren == 3) {
+        tree *arrayDecl = getChild(node, 2);
+
+        int size = arrayDecl->val;
+
+        addVarOffset(idNode->val, size, 1);  // array
+    } else {
+        addVarOffset(idNode->val, 1, 0);     // scalar
+    }
+}
+
+static const char *genVarAddress(tree *varNode) {
+    tree *idNode = getChild(varNode, 0);
+    int baseOffset = getVarOffset(idNode->val);
+
+    const char *addrReg = getReg();
+
+    // Scalar variable: address is just s0 + offset
+    if (varNode->numChildren == 1) {
+        fprintf(out, "    addi %s, s0, %d\n", addrReg, baseOffset);
+        return addrReg;
+    }
+
+    // Array element: address = base + index * 4
+    const char *indexReg = genExpr(getChild(varNode, 1));
+
+    fprintf(out, "    slli %s, %s, 2\n", indexReg, indexReg);
+    fprintf(out, "    addi %s, s0, %d\n", addrReg, baseOffset);
+    fprintf(out, "    sub %s, %s, %s\n", addrReg, addrReg, indexReg);
+
+    freeReg(indexReg);
+    return addrReg;
 }
 
 void genAssign(tree *node) {
     tree *varNode = getChild(node, 0);
-    tree *idNode = getChild(varNode, 0);
     tree *exprNode = getChild(node, 1);
 
-    const char *reg = genExpr(exprNode);
-    int offset = getVarOffset(idNode->val);
+    const char *valueReg = genExpr(exprNode);
+    const char *addrReg = genVarAddress(varNode);
 
-    fprintf(out, "    sw %s, %d(s0)\n", reg, offset);
+    fprintf(out, "    sw %s, 0(%s)\n", valueReg, addrReg);
 
-    freeReg(reg);
+    freeReg(valueReg);
+    freeReg(addrReg);
 }
 
 const char *genExpr(tree *node) {
@@ -320,12 +361,13 @@ const char *genExpr(tree *node) {
         }
 
         case VAR: {
-            tree *idNode = getChild(node, 0);
-            const char *reg = getReg();
-            int offset = getVarOffset(idNode->val);
+            const char *addrReg = genVarAddress(node);
+            const char *valueReg = getReg();
 
-            fprintf(out, "    lw %s, %d(s0)\n", reg, offset);
-            return reg;
+            fprintf(out, "    lw %s, 0(%s)\n", valueReg, addrReg);
+
+            freeReg(addrReg);
+            return valueReg;
         }
 
         default:
