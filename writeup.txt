@@ -1,11 +1,22 @@
 1. Raymond Nava & Parker Bracamontez | CS.4318 Compiler Construction
 ---------------------------------------------------------------------
 2. Contributions:
+    - codegen.c - Raymond Nava + Parker Bracamontez
+    - adjustments to driver.c, parser.y, scanner.l - Raymond Nava + Park Bracamontez
+    - test1-5.mC - Raymond Nava + Parker Bracamontez
 
-
+    - Additional support "FOR" loopStmt - Parker Bracamontez
+    - Testing on zeus - Parker Bracamontez(basically importing folder for Raymond)
+        + Raymond Nava testing and screenshotting tests
+---------------------------------------------------------------------
+Instructions for running
+1. make clean - inside main file
+2. make
+3. ./obj/mcc Sample_Test/test1.mC
+4. cat out.s
 
 ---------------------------------------------------------------------
-3. 2 Examples of how we tested the code:
-
---------------------------------------------
-
+This specific version of the project was built with the RISC-V assembly in mind
+instead of the Academic standard of MIPS32. Reason for this includes more real
+world experience. However, future iterations or additional practice would like 
+to be translated into ARM.
